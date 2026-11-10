@@ -18,7 +18,7 @@ keywords:
   - automotive radar
 preferred-citation:
   type: conference-paper
-  title: "Towards Neuromorphic Cognitive Radar: A Spiking Perception-Action Loop for Real-Time Performance Optimisation"
+  title: "Neuromorphic Cognitive Radar: A Spiking Perception-Action Loop for Real-Time Performance Optimisation"
   authors:
     - family-names: Pirkani
       given-names: Anum
