@@ -35,7 +35,7 @@ MAIN = r'''function X = neuromorphic_cognitive_radar(mode, varargin)
 %      for Real-Time Performance Optimisation", NICE 2027.
 %   A. Pirkani and B. Jelfs, Microwave Integrated Systems Laboratory,
 %   University of Birmingham, UK.
-%   https://github.com/anumpirkani123/neuromorphic-cognitive-radar
+%   https://github.com/anumapirkani/neuromorphic-cognitive-radar
 %
 %   USAGE
 %     neuromorphic_cognitive_radar              % self-tests, all experiments, figures, tables
