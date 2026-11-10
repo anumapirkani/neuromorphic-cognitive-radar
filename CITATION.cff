@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the paper below."
+title: "Neuromorphic Cognitive Radar Simulator"
+authors:
+  - family-names: Pirkani
+    given-names: Anum
+    affiliation: "Microwave Integrated Systems Laboratory, University of Birmingham"
+  - family-names: Jelfs
+    given-names: Beth
+    affiliation: "Microwave Integrated Systems Laboratory, University of Birmingham"
+license: MIT
+doi: 10.5281/zenodo.24120189
+repository-code: "https://github.com/anumapirkani/neuromorphic-cognitive-radar"
+keywords:
+  - cognitive radar
+  - neuromorphic computing
+  - spiking neural networks
+  - reward-modulated STDP
+  - automotive radar
+preferred-citation:
+  type: conference-paper
+  title: "Neuromorphic Cognitive Radar: A Spiking Perception-Action Loop for Real-Time Performance Optimisation"
+  authors:
+    - family-names: Pirkani
+      given-names: Anum
+    - family-names: Jelfs
+      given-names: Beth
+  collection-title: "Neuro-Inspired Computational Elements Conference (NICE)"
+  year: 2027
