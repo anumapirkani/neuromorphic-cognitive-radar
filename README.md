@@ -29,6 +29,7 @@ tools/make_macros.py             summary.json -> results_macros.tex (numbers in 
 tools/make_figures.py            figure_data.mat -> publication figures (vector PDF)
 results/summary.json             results of the paper (every quoted number)
 results/figure_data.mat          arrays behind the paper figures
+examples/reward_sensitivity.m    sensitivity of learning to the reward values
 ```
 
 ## Quick start
