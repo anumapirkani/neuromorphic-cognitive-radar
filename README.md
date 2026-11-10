@@ -1,8 +1,6 @@
 # Neuromorphic Cognitive Radar Simulator
 
-Closed-loop simulation framework for the paper
-
-> A. Pirkani and B. Jelfs, "Towards Neuromorphic Cognitive Radar: A Spiking
+> A. Pirkani and B. Jelfs, "Neuromorphic Cognitive Radar: A Spiking
 > Perception-Action Loop for Real-Time Performance Optimisation," NICE 2027.
 
 A 77 GHz FMCW radar with a phased transmit array and 16-channel digital beamforming
@@ -12,29 +10,24 @@ energy) and the sweep bandwidth of every sector for the next CPI. Three controll
 are compared in closed loop:
 
 | Controller | Perception | Learning |
-|---|---|---|
 | Uniform | none (fixed dwell and bandwidth) | none |
 | Rule-based | motion saliency with a Gaussian clutter-notch (MTI-type) prior, attention field | none |
 | Neuromorphic | local winner-take-all (WTA) spike encoder and weight-shared leaky integrate-and-fire (LIF) network | topographic reward-modulated STDP, online and without labels |
 
-The repository reproduces every number, table and figure of the paper.
-
 ## Repository layout
-
 ```
 neuromorphic_cognitive_radar.m   single-file version (all modules as local functions)
 src/                             modular MATLAB sources (ncr_*.m) and run_ncr_paper.m
 tools/build_single_file.py       merges src/ into neuromorphic_cognitive_radar.m
-tools/make_macros.py             summary.json -> results_macros.tex (numbers in the paper)
-tools/make_figures.py            figure_data.mat -> publication figures (vector PDF)
-results/summary.json             results of the paper (every quoted number)
+tools/make_macros.py             summary.json generates results_macros.tex (used in the paper)
+tools/make_figures.py            figure_data.mat are used for publication figures (vector PDF)
+results/summary.json             results of the paper
 results/figure_data.mat          arrays behind the paper figures
 examples/reward_sensitivity.m    sensitivity of learning to the reward values
 ```
 
 ## Quick start
-
-Single file (MATLAB or GNU Octave):
+Single file (MATLAB):
 
 ```matlab
 neuromorphic_cognitive_radar              % self-tests, all experiments, figures, tables
@@ -69,13 +62,6 @@ python3 tools/make_macros.py  results/summary.json  results_macros.tex
 
 After editing `src/`, regenerate the single file with
 `python3 tools/build_single_file.py src neuromorphic_cognitive_radar.m`.
-
-## Requirements and runtime
-
-MATLAB R2019b or later without toolboxes (the Parallel Computing Toolbox is optional:
-`'Parallel', true`), or GNU Octave 7 or later. The full study comprises about 400
-episodes of 64 CPIs. Random-number streams differ between MATLAB and Octave, so single
-runs differ, while Monte Carlo means agree within their confidence intervals.
 
 ## What is modelled
 
@@ -112,9 +98,7 @@ low-precision weights with stochastic rounding.
 multiply-accumulate at 45 nm (Horowitz, ISSCC 2014).
 
 ## Experiments
-
 | ID | Content | Runs |
-|---|---|---|
 | E1 | Uniform vs rule-based vs neuromorphic | 20 |
 | E2 | Ablation: no learning, global R-STDP, rate / latency / delta codes, 8- and 4-bit weights, interference excision | 6 per variant |
 | E3 | Interferer EIRP sweep (off, 20 to 29 dBm), including uniform allocation with excision | 4 per point |
@@ -123,20 +107,6 @@ multiply-accumulate at 45 nm (Horowitz, ISSCC 2014).
 All configurations use paired random seeds. Results are reported as means with 95%
 confidence intervals (Student t) and paired t-test p-values.
 
-## Outputs
-
-Written to `results/` (or the folder given by `'OutDir'`): `E1_main.mat` to
-`E4_latency.mat`; `figures/` with the paper figures (`fig_scene_attention`,
-`fig_dynamics`, `fig_kernel`, `fig_sweeps`) and supplementary figures (`supp_*`);
-`tables/` with LaTeX tables and `summary.txt`; `summary.json` and `figure_data.mat`.
-
-## Verification
-
-`'selftest'` checks point-target placement in range, Doppler and angle, processed SNR
-against the link budget, the CA-CFAR false-alarm rate, the interference burst length,
-the Hungarian assignment against brute force, OSPA properties, the resource budgets
-and tracker convergence.
-
 ## Citation
 
 If you use this code, please cite the paper (see also `CITATION.cff`):
@@ -144,7 +114,7 @@ If you use this code, please cite the paper (see also `CITATION.cff`):
 ```bibtex
 @inproceedings{pirkani2027neuromorphic,
   author    = {A. Pirkani and B. Jelfs},
-  title     = {Towards Neuromorphic Cognitive Radar: A Spiking Perception-Action
+  title     = {Neuromorphic Cognitive Radar: A Spiking Perception-Action
                Loop for Real-Time Performance Optimisation},
   booktitle = {Neuro-Inspired Computational Elements Conference (NICE)},
   year      = {2027}
