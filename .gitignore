@@ -1,0 +1,20 @@
+# simulation outputs (the paper's summary.json and figure_data.mat are tracked)
+results/*.mat
+!results/figure_data.mat
+results/figures/
+results/tables/
+results_quick/
+figures/
+results_macros.tex
+
+# MATLAB / Octave
+*.asv
+*.m~
+octave-workspace
+
+# Python
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
