@@ -2,7 +2,7 @@ function X = neuromorphic_cognitive_radar(mode, varargin)
 %NEUROMORPHIC_COGNITIVE_RADAR  Spiking perception-action loop for a cognitive FMCW radar.
 %
 %   Complete simulation framework for the paper
-%     "Towards Neuromorphic Cognitive Radar: A Spiking Perception-Action Loop
+%     "Neuromorphic Cognitive Radar: A Spiking Perception-Action Loop
 %      for Real-Time Performance Optimisation", NICE 2027.
 %   A. Pirkani and B. Jelfs, Microwave Integrated Systems Laboratory,
 %   University of Birmingham, UK.
@@ -38,51 +38,11 @@ function X = neuromorphic_cognitive_radar(mode, varargin)
 %     Neuromorphic  spike encoder + leaky integrate-and-fire network trained online,
 %                   without labels, by reward-modulated STDP (three-factor rule)
 %
-%   WHAT IS MODELLED
-%   Radar front-end: monostatic radar equation, coherent phased-array EIRP, noise
-%     figure and losses, dechirped FMCW signal per sector with exact slow-time phase
-%     history (Doppler and micro-Doppler), receive steering vectors, 12-bit ADC.
-%   Scene: extended vehicle (6 scattering centres), pedestrian with limb micro-motion,
-%     cyclist appearing mid-sequence; Swerling I fluctuation; parked cars and a pole;
-%     vegetation with K-distributed amplitudes and internal motion.
-%   Mutual interference: unsynchronised FMCW radar; bursts of Fs^2/|S_v - S_i| samples,
-%     one-way Friis power, coherent across the array; optional time-domain excision.
-%   Processing: Hann-windowed range FFT, zero-padded Doppler FFT, receive DBF (3 beams
-%     per sector), 2-D CA-CFAR, 3-D peak picking with sub-bin interpolation, clustering.
-%   Tracking and metrics: EKF (constant velocity, polar measurements), Hungarian GNN
-%     association, M-of-N confirmation; P_D, false clusters, OSPA (c = 5 m, p = 2).
-%   Neuromorphic loop: local winner-take-all rate code (or rate, latency, delta codes);
-%     76,800 inputs, 4,800 LIF neurons in 4 weight-shared Doppler feature maps,
-%     16 sector neurons; R-STDP with a spatially resolved reward from the radar's own
-%     outputs (confirmed, unconfirmed, stationary detections, idle activity);
-%     optional low-precision synapses with stochastic rounding.
-%   Energy: indicative per-operation costs, Loihi synaptic operation 23.6 pJ and
-%     update 120 pJ (Davies et al. 2018); FP32 MAC 4.6 pJ at 45 nm (Horowitz 2014).
-%
 %   EXPERIMENTS (paired seeds; mean +/- 95 % CI, Student t; paired t-tests)
 %     E1 main      uniform vs rule-based vs neuromorphic, 20 runs
 %     E2 ablation  no learning, global R-STDP, rate/latency/delta codes, 8/4-bit, excision
 %     E3 intf      interferer EIRP off, 20, 23, 26, 29 dBm, plus uniform + excision
 %     E4 latency   network time steps per CPI, 5 to 50
-%
-%   OUTPUTS (in OutDir)
-%     E1_main.mat, E2_ablation.mat, E3_interference.mat, E4_latency.mat
-%     figures/  fig_scene_attention, fig_dynamics, fig_kernel, fig_sweeps (paper)
-%               supp_* (range-Doppler maps, spike rasters, resource maps, OSPA
-%               components, activity and energy, ablation); vector PDF and PNG
-%     tables/   LaTeX tables (booktabs) and summary.txt
-%     summary.json     every number quoted in the paper (read by make_macros.py)
-%     figure_data.mat  arrays behind the paper figures (read by make_figures.py)
-%
-%   REQUIREMENTS
-%   MATLAB R2019b or later, no toolboxes (exportgraphics from R2020a is used when
-%   available), or GNU Octave 7 or later. Runtime: about 0.2 s per CPI in MATLAB;
-%   the full study is about 400 episodes of 64 CPIs. Random-number streams differ
-%   between MATLAB and Octave, so single runs differ while Monte Carlo means agree
-%   within their confidence intervals.
-%
-%   See also the local functions NCR_CONFIG (all parameters), NCR_EPISODE (one
-%   closed-loop episode) and NCR_SELFTEST (verification).
 
 if nargin < 1 || isempty(mode), mode = 'full'; end
 opt = struct('outdir', '', 'experiments', {{'main', 'ablation', 'intf', 'latency'}}, ...
@@ -138,10 +98,7 @@ fprintf('\nFigures: %s\nTables:  %s\n', fullfile(cfg.out.dir, 'figures'), fullfi
 if nargout == 0, clear X; end
 end
 
-%% ============================================================================
 %%  CONFIGURATION
-%% ============================================================================
-
 function cfg = ncr_config(varargin)
 %NCR_CONFIG  Parameters of the neuromorphic cognitive radar study.
 %
@@ -411,10 +368,7 @@ function g = coherent_gain(w)
 g = sum(w)^2 / sum(w.^2);
 end
 
-%% ============================================================================
 %%  SCENARIO AND GROUND TRUTH
-%% ============================================================================
-
 function scene = ncr_scene(cfg)
 %NCR_SCENE  Urban scenario seen by a stationary 77 GHz radar at the origin.
 %
@@ -637,10 +591,7 @@ for k = 1:numel(scene.tgt)
 end
 end
 
-%% ============================================================================
 %%  RF FRONT-END AND INTERFERENCE
-%% ============================================================================
-
 function [snr, info] = ncr_link_budget(cfg, R, rcsLin, gTx)
 %NCR_LINK_BUDGET  Per-sample, per-channel SNR from the monostatic radar equation.
 %
@@ -801,10 +752,7 @@ X = X .* reshape(~mask, size(X, 1), 1, size(X, 3));
 frac = mean(mask(:));
 end
 
-%% ============================================================================
 %%  SIGNAL PROCESSING AND DETECTION
-%% ============================================================================
-
 function cube = ncr_process(cfg, X, j, nj, bj)
 %NCR_PROCESS  Range FFT, Doppler FFT and receive beamforming for sector j.
 %
@@ -1088,10 +1036,7 @@ for j = 1:cfg.ar.M
 end
 end
 
-%% ============================================================================
 %%  TRACKING AND METRICS
-%% ============================================================================
-
 function [trk, assoc] = ncr_tracker(cfg, trk, meas, t)
 %NCR_TRACKER  One update of the EKF / GNN multi-target tracker.
 %
@@ -1358,10 +1303,7 @@ tgtSec = unique([truth(act).sector]);
 ev.dwellOnTgt = sum(n(tgtSec)) / cfg.bud.Nc;
 end
 
-%% ============================================================================
 %%  NEUROMORPHIC PERCEPTION AND LEARNING
-%% ============================================================================
-
 function E = ncr_encode(cfg, Zc, ZcPrev)
 %NCR_ENCODE  Spike encoding of the coarse radar map.
 %
@@ -1576,10 +1518,7 @@ r = min(cfg.d.NRc, max(1, ceil(R / cfg.grid.dRc)));
 a = min(cfg.d.NAc, max(1, floor((th - cfg.ar.secEdges(1)) / cfg.grid.dAc) + 1));
 end
 
-%% ============================================================================
 %%  ATTENTION AND RESOURCE ALLOCATION
-%% ============================================================================
-
 function varargout = ncr_attention(op, cfg, varargin)
 %NCR_ATTENTION  Saliency, attention fields and resource allocation.
 %
@@ -1660,10 +1599,7 @@ end
 b = min(wf.Bmax, wf.Bmin + lo * ut);
 end
 
-%% ============================================================================
 %%  EXPERIMENTS AND STATISTICS
-%% ============================================================================
-
 function log = ncr_episode(cfg, scene, policy, seed, keepSnap)
 %NCR_EPISODE  Closed-loop simulation of one episode (Nscans CPIs).
 %
@@ -2086,10 +2022,7 @@ function say(cfg, msg)
 if cfg.sim.verbose, fprintf('\n=== %s (%s) ===\n', msg, datestr(now, 'HH:MM:SS')); end
 end
 
-%% ============================================================================
 %%  OUTPUTS: FIGURES, TABLES, EXPORT
-%% ============================================================================
-
 function ncr_figures(cfg, X)
 %NCR_FIGURES  Paper and supplementary figures (vector PDF and PNG).
 %
@@ -3148,10 +3081,7 @@ function y = scalar_or_nan(x)
 if isempty(x), y = NaN; else, y = double(x(1)); end
 end
 
-%% ============================================================================
-%%  VERIFICATION AND UTILITIES
-%% ============================================================================
-
+%%  VERIFICATION
 function T = ncr_selftest(cfg)
 %NCR_SELFTEST  Verification of the radar model, processing and utilities.
 %
