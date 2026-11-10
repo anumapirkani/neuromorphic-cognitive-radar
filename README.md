@@ -139,7 +139,17 @@ and tracker convergence.
 
 ## Citation
 
-If you use this code, please cite the paper (see `CITATION.cff`).
+If you use this code, please cite the paper (see also `CITATION.cff`):
+
+```bibtex
+@inproceedings{pirkani2027neuromorphic,
+  author    = {A. Pirkani and B. Jelfs},
+  title     = {Towards Neuromorphic Cognitive Radar: A Spiking Perception-Action
+               Loop for Real-Time Performance Optimisation},
+  booktitle = {Neuro-Inspired Computational Elements Conference (NICE)},
+  year      = {2027}
+}
+```
 
 ## Licence
 
